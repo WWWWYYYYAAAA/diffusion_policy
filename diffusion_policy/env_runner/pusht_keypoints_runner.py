@@ -8,8 +8,9 @@ import dill
 import math
 import wandb.sdk.data_types.video as wv
 from diffusion_policy.env.pusht.pusht_keypoints_env import PushTKeypointsEnv
+from gym import logger
 from diffusion_policy.gym_util.async_vector_env import AsyncVectorEnv
-# from diffusion_policy.gym_util.sync_vector_env import SyncVectorEnv
+from diffusion_policy.gym_util.sync_vector_env import SyncVectorEnv
 from diffusion_policy.gym_util.multistep_wrapper import MultiStepWrapper
 from diffusion_policy.gym_util.video_recording_wrapper import VideoRecordingWrapper, VideoRecorder
 
@@ -133,7 +134,14 @@ class PushTKeypointsRunner(BaseLowdimRunner):
             env_prefixs.append('test/')
             env_init_fn_dills.append(dill.dumps(init_fn))
 
-        env = AsyncVectorEnv(env_fns)
+        try:
+            env = AsyncVectorEnv(env_fns)
+        except PermissionError:
+            logger.warn(
+                "AsyncVectorEnv unavailable due to permissions; "
+                "falling back to SyncVectorEnv."
+            )
+            env = SyncVectorEnv(env_fns)
 
         # test env
         # env.reset(seed=env_seeds)

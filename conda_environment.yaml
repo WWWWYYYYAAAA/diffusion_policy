@@ -38,6 +38,7 @@ dependencies:
   - termcolor=2.0.1
   - tensorboard=2.10.1
   - tensorboardx=2.5.1
+  - protobuf=3.20.*
   - psutil=5.9.2
   - click=8.0.4
   - boto3=1.24.96
@@ -67,3 +68,5 @@ dependencies:
     - multiprocess==0.70.13
     - r3m @ https://github.com/facebookresearch/r3m/archive/b2334e726887fa0206962d7984c69c5fb09cceab.tar.gz
     - dm-control==1.0.9
+    # keep compatible with diffusers==0.11.1 (uses cached_download)
+    - huggingface_hub==0.13.4

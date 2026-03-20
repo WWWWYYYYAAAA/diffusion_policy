@@ -130,6 +130,16 @@ class AsyncVectorEnv(VectorEnv):
                     "`Tuple`, `Dict`) for batching. Set `shared_memory=False` "
                     "if you use custom observation spaces."
                 )
+            except PermissionError:
+                logger.warn(
+                    "Shared memory unavailable; falling back to non-shared "
+                    "observations. This may reduce throughput."
+                )
+                self.shared_memory = False
+                _obs_buffer = None
+                self.observations = create_empty_array(
+                    self.single_observation_space, n=self.num_envs, fn=np.zeros
+                )
         else:
             _obs_buffer = None
             self.observations = create_empty_array(
